@@ -25,7 +25,7 @@ func TestService_Search(t *testing.T) {
 			name:           "still returns shop, even if the case doesnt match",
 			todostoAdd:     []string{"Shopping"},
 			query:          "sh",
-			expectedResult: []string{"Shopping"},
+			expectedResult: []string{"Shopping"},006
 		},
 	}
 

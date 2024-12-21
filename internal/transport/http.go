@@ -25,7 +25,12 @@ func NewServer(todoSvc *todo.Service) *Server {
 	mux.HandleFunc("GET /todo", func(w http.ResponseWriter, r *http.Request) {
 		//  _, err := w.Write([]byte("Hello World")) We are taking the ResponseWriter which is part of the HandleFunc, we use the writer to write "Hello World" back to the user.
 
-		b, err := json.Marshal(todoSvc.GetAll())
+		todoItems, err := todoSvc.GetAll()
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		b, err := json.Marshal(todoItems)
 		if err != nil {
 			log.Println(err)
 		}
@@ -58,7 +63,11 @@ func NewServer(todoSvc *todo.Service) *Server {
 			writer.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		results := todoSvc.Search(query)
+		results, err := todoSvc.Search(query)
+		if err != nil {
+			log.Println(err.Error())
+			writer.WriteHeader(http.StatusInternalServerError)
+		}
 		// Convert the search results into JSON and write them to the response
 		jsonResults, err := json.Marshal(results)
 		if err != nil {
